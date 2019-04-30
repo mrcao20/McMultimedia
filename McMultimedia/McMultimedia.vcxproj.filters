@@ -1,0 +1,172 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{D9D6E242-F8AF-46E4-B9FD-80ECBC20BA3E}</UniqueIdentifier>
+      <Extensions>qrc;*</Extensions>
+      <ParseFiles>false</ParseFiles>
+    </Filter>
+    <Filter Include="Generated Files">
+      <UniqueIdentifier>{71ED8ED8-ACB9-4CE9-BBE1-E00B30144E11}</UniqueIdentifier>
+      <Extensions>moc;h;cpp</Extensions>
+      <SourceControlFiles>False</SourceControlFiles>
+    </Filter>
+    <Filter Include="Header Files\MediaPlayer">
+      <UniqueIdentifier>{8ccde5a8-faf1-4720-8078-8131efcb3bb1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MediaPlayer">
+      <UniqueIdentifier>{0a10b911-e410-4cd9-b647-66e8e8f27613}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Decoder">
+      <UniqueIdentifier>{565d780a-964d-44a9-b582-43b05d917b69}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Decoder">
+      <UniqueIdentifier>{66689939-486b-4f1c-9504-2a0ef9361e34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Utils">
+      <UniqueIdentifier>{b2603335-4d00-431e-b3e4-3f84599a85cb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Decoder\impl">
+      <UniqueIdentifier>{199a61f9-7c30-4320-b52b-bab1efe299fd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\domain">
+      <UniqueIdentifier>{245123b8-d4ee-4560-aa90-733110213412}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MediaOutput">
+      <UniqueIdentifier>{9fa662da-ef9c-4df6-8372-8c0d46dcedc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MediaOutput">
+      <UniqueIdentifier>{1ab2a054-3e57-4552-b3a2-85b339e52ad2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MediaOutput\impl">
+      <UniqueIdentifier>{d500d8db-ec06-481d-ad69-de113b10631c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\IO">
+      <UniqueIdentifier>{484f4440-a7d4-4066-8552-6303e575f278}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\IO">
+      <UniqueIdentifier>{32d85c79-a699-4b46-900c-7a418285fe47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MediaOutput\Renderer">
+      <UniqueIdentifier>{ce101e01-37b1-429c-b9e2-17d6b3cb1f72}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\MediaOutput\Renderer">
+      <UniqueIdentifier>{5bbdd093-3e03-40e9-bdf0-fbdc22cc18cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\MediaOutput\Renderer\impl">
+      <UniqueIdentifier>{1baf7e32-9bcf-4871-8e99-f91ab6f6bfef}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="mcmultimedia_global.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="McAVPacketMan.h">
+      <Filter>Header Files\Utils</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcMediaClock.h">
+      <Filter>Header Files\Decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcDecoder.h">
+      <Filter>Header Files\Decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcAudio.h">
+      <Filter>Header Files\Decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="McVideoFrame.h">
+      <Filter>Header Files\domain</Filter>
+    </ClInclude>
+    <ClInclude Include="McAudioFrame.h">
+      <Filter>Header Files\domain</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcVideo.h">
+      <Filter>Header Files\Decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="McGlobal.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcAudioData.h">
+      <Filter>Header Files\Decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcVideoRenderer.h">
+      <Filter>Header Files\MediaOutput\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="McVideoFormat.h">
+      <Filter>Header Files\MediaOutput\Renderer\impl</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcMediaControl.h">
+      <Filter>Header Files\MediaPlayer</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="McMediaPlayer.cpp">
+      <Filter>Source Files\MediaPlayer</Filter>
+    </ClCompile>
+    <ClCompile Include="McMediaDecoder.cpp">
+      <Filter>Source Files\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="McVideoDecoder.cpp">
+      <Filter>Source Files\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="McAudioDecoder.cpp">
+      <Filter>Source Files\Decoder</Filter>
+    </ClCompile>
+    <ClCompile Include="McAudioOutput.cpp">
+      <Filter>Source Files\MediaOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="McAudioIO.cpp">
+      <Filter>Source Files\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="McVideoOutput.cpp">
+      <Filter>Source Files\MediaOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="McOpenGLRenderer.cpp">
+      <Filter>Source Files\MediaOutput\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="McMediaControl.cpp">
+      <Filter>Source Files\MediaPlayer</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <QtMoc Include="McMediaPlayer.h">
+      <Filter>Header Files\MediaPlayer</Filter>
+    </QtMoc>
+    <QtMoc Include="McVideoDecoder.h">
+      <Filter>Header Files\Decoder\impl</Filter>
+    </QtMoc>
+    <QtMoc Include="McAudioDecoder.h">
+      <Filter>Header Files\Decoder\impl</Filter>
+    </QtMoc>
+    <QtMoc Include="McMediaDecoder.h">
+      <Filter>Header Files\Decoder\impl</Filter>
+    </QtMoc>
+    <QtMoc Include="McAudioOutput.h">
+      <Filter>Header Files\MediaOutput\impl</Filter>
+    </QtMoc>
+    <QtMoc Include="McAudioIO.h">
+      <Filter>Header Files\IO</Filter>
+    </QtMoc>
+    <QtMoc Include="McVideoOutput.h">
+      <Filter>Header Files\MediaOutput\impl</Filter>
+    </QtMoc>
+    <QtMoc Include="McOpenGLRenderer.h">
+      <Filter>Header Files\MediaOutput\Renderer\impl</Filter>
+    </QtMoc>
+    <QtMoc Include="McMediaControl.h">
+      <Filter>Header Files\MediaPlayer</Filter>
+    </QtMoc>
+  </ItemGroup>
+</Project>
