@@ -1,0 +1,2 @@
+# McMultimedia
+基于FFMPEG和QT的音视频解码器，视频使用QT中的OpenGL渲染
