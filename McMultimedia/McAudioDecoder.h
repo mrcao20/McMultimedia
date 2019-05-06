@@ -18,20 +18,26 @@ public:
 	explicit McAudioDecoder(QObject *parent = 0);
 	virtual ~McAudioDecoder();
 
+	// 设置刷新字符串
 	void setFlushStr(const char *str) noexcept override;
 	// 初始化解码器
 	bool init(AVStream *stream) noexcept override;
 	// 添加资源包
 	void addPacket(AVPacket *packet) noexcept override;
+	// 获取剩余包数量
+	int getPacketNum() noexcept override;
+	// 清除所有资源包
+	void clearPacket() noexcept override;
 	// 解码音频包
 	void getAudioData(const QSharedPointer<McAudioFrame> &frame, const std::function<void()> &callback) noexcept override;
+	// 获取音频格式
 	QAudioFormat getAudioFormat() noexcept override;
 
-	void release() noexcept;
-
 private:
-	void clearPacket() noexcept;
+	// 初始化音频转换器
 	bool init_Swr() noexcept;
+	// 释放资源
+	void release() noexcept;
 
 private:
 	QScopedPointer<McAudioDecoderData> d;

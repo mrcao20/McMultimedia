@@ -18,7 +18,7 @@ struct McOpenGLRendererData {
 	QOpenGLTexture *textureY = nullptr, *textureU = nullptr, *textureV = nullptr;
 	GLuint idY, idU, idV; //自己创建的纹理对象ID，创建错误返回0
 
-	QSharedPointer<McVideoFrame> frame;
+	QSharedPointer<McVideoFrame> frame;		// 视频帧，由外部传入
 };
 
 McOpenGLRenderer::McOpenGLRenderer(QWidget *parent)

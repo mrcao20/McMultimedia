@@ -13,6 +13,8 @@ extern "C" {
 #include "McAVPacketMan.h"
 #include "McAudioFrame.h"
 
+#define AUDIO_BUFFER_SIZE 192000
+
 struct McAudioDecoderData {
 	AVStream *audioStream{ nullptr };					// 音频流，从外部传入
 	AVCodecContext *codecContext{ nullptr };			// context
@@ -24,8 +26,8 @@ struct McAudioDecoderData {
 	QAudioFormat audioFormat;							// 音频格式
 	AVSampleFormat sampleFormat{ AV_SAMPLE_FMT_FLT };	// 目标格式
 
-	DECLARE_ALIGNED(16, quint8, audioData)[192000];		// 用于临时存放被解码出的音频数据
-	const char *flushStr{ nullptr };
+	DECLARE_ALIGNED(16, quint8, audioData)[AUDIO_BUFFER_SIZE];		// 用于临时存放被解码出的音频数据
+	const char *flushStr{ nullptr };					// 刷新解码器所用字符串，由外部设置，当遇到这个字符串时刷新解码器
 };
 
 McAudioDecoder::McAudioDecoder(QObject *parent)
@@ -35,6 +37,7 @@ McAudioDecoder::McAudioDecoder(QObject *parent)
 }
 
 McAudioDecoder::~McAudioDecoder(){
+	release();
 }
 
 void McAudioDecoder::setFlushStr(const char *str) noexcept {
@@ -46,6 +49,7 @@ bool McAudioDecoder::init(AVStream *stream) noexcept {
 		return false;
 	}
 
+	release();	// 当初始化新的解码器时，释放上一个解码器资源
 	AVCodec *pCodec = avcodec_find_decoder(stream->codecpar->codec_id);
 	if (pCodec == NULL) {
 		qCritical() << "Audio codec not found.";
@@ -58,6 +62,7 @@ bool McAudioDecoder::init(AVStream *stream) noexcept {
 		return false;
 	}
 
+	// 设置音频格式
 	d->audioFormat.setChannelCount(d->codecContext->channels);
 	d->audioFormat.setSampleRate(d->codecContext->sample_rate);
 	d->audioFormat.setSampleSize(8 * av_get_bytes_per_sample(d->sampleFormat));
@@ -75,24 +80,41 @@ void McAudioDecoder::addPacket(AVPacket *packet) noexcept {
 	if (!packet || !d->audioStream) {
 		return;
 	}
-	if (packet->stream_index != d->audioStream->index) {
+	if (packet->stream_index != d->audioStream->index && strcmp((char*)packet->data, d->flushStr) != 0) {
 		return;
 	}
 	AVPacket tmpPck;
-	av_packet_ref(&tmpPck, packet);
+	av_packet_ref(&tmpPck, packet);	// 引用传入的资源包
 	QMutexLocker locker(&d->mtx);
 	d->audioPackets.enqueue(tmpPck);
 }
 
+int McAudioDecoder::getPacketNum() noexcept {
+	QMutexLocker locker(&d->mtx);
+	return d->audioPackets.size();
+}
+
+void McAudioDecoder::clearPacket() noexcept {
+	QMutexLocker locker(&d->mtx);
+	for (AVPacket &packet : d->audioPackets) {
+		av_packet_unref(&packet);
+	}
+	d->audioPackets.clear();
+}
+
 void McAudioDecoder::getAudioData(const QSharedPointer<McAudioFrame> &frame, const std::function<void()> &callback) noexcept {
-	if (!d->audioStream) {
+	if (!d->audioStream) {	// 由于音频流必须存在，哪怕是无声视频也会存在音频流以供视频流同步，所以当不存在音频流时输出错误
 		qCritical() << "audio stream not found, please make sure media started decode";
 		return;
 	}
 
 	QMutexLocker locker(&d->mtx);
-	if (d->audioPackets.isEmpty())
+	if (d->audioPackets.isEmpty()) {
+		// 保留上一帧的时间，设置数据为"NULL"，设置大小为0，表示没有数据
+		frame->setData((quint8 *)"NULL");
+		frame->setSize(0);
 		return;
+	}
 	McAVPacketMan packet(&d->audioPackets.dequeue());
 	locker.unlock();
 
@@ -164,14 +186,6 @@ void McAudioDecoder::release() noexcept {
 	}
 	d->audioStream = nullptr;
 	clearPacket();
-}
-
-void McAudioDecoder::clearPacket() noexcept {
-	QMutexLocker locker(&d->mtx);
-	for (AVPacket &packet : d->audioPackets) {
-		av_packet_unref(&packet);
-	}
-	d->audioPackets.clear();
 }
 
 bool McAudioDecoder::init_Swr() noexcept {

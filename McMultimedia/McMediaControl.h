@@ -13,13 +13,16 @@ public:
 	explicit McMediaControl(QObject *parent = 0);
 	virtual ~McMediaControl();
 
-	void addControl(IMcMediaControl *control) noexcept;
+	// Ìí¼Ó¿ØÖÆÆ÷
+	void addControl(IMcControl *control) noexcept;
 
-	void start() noexcept override;
+	bool start() noexcept override;
 	void pause() noexcept override;
 	void resume() noexcept override;
 	void stop() noexcept override;
 	void quit() noexcept override;
+
+	void seek(qint64 pos) noexcept override;
 
 private:
 	QScopedPointer<McMediaControlData> d;

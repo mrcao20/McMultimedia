@@ -98,8 +98,11 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="IMcAudioData.h" />
+    <ClInclude Include="IMcControl.h" />
     <ClInclude Include="IMcMediaControl.h" />
+    <ClInclude Include="IMcMediaDecoder.h" />
     <ClInclude Include="IMcVideo.h" />
+    <ClInclude Include="IMcVideoOutput.h" />
     <ClInclude Include="IMcVideoRenderer.h" />
     <ClInclude Include="McAudioFrame.h" />
     <QtMoc Include="McVideoOutput.h">

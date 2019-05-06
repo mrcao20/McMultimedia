@@ -16,8 +16,11 @@ public:
 	explicit McOpenGLRenderer(QWidget *parent = 0);
 	virtual ~McOpenGLRenderer();
 
+	// 指定需要的视频格式
 	McVideoFormat::PixelFormat getVideoFormat() noexcept override;
+	// 设置视频帧，需要渲染的视频都将通过该视频帧传入
 	void setVideoFrame(const QSharedPointer<McVideoFrame> &frame) noexcept override;
+	// 渲染
 	void rendering() noexcept override;
 
 protected:

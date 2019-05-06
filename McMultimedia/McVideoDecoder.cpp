@@ -26,7 +26,7 @@ struct McVideoDecoderData {
 	QMutex mtx;									// 视频包的同步锁
 	QQueue<AVPacket> videoPackets;				// 存放被读出的待解码的视频包
 
-	const char *flushStr{ nullptr };
+	const char *flushStr{ nullptr };			// 刷新解码器所用字符串，由外部设置，当遇到这个字符串时刷新解码器
 };
 
 McVideoDecoder::McVideoDecoder(QObject *parent)
@@ -51,6 +51,7 @@ bool McVideoDecoder::init(AVStream *stream) noexcept {
 		qCritical() << "video format not set.";
 		return false;
 	}
+	release();	// 释放上一个解码器的资源
 	AVCodec *pCodec = avcodec_find_decoder(stream->codecpar->codec_id);
 	if (pCodec == NULL) {
 		qCritical() << "Video codec not found.";
@@ -67,10 +68,12 @@ bool McVideoDecoder::init(AVStream *stream) noexcept {
 	d->frame = av_frame_alloc();
 	d->frameDst = av_frame_alloc();
 
+	// 申请一块内存，指向输出视频帧
 	d->outBuffer = (unsigned char *)av_malloc(av_image_get_buffer_size(d->format, d->codecContext->width, d->codecContext->height, 1));
 	av_image_fill_arrays(d->frameDst->data, d->frameDst->linesize, d->outBuffer,
 		d->format, d->codecContext->width, d->codecContext->height, 1);
 
+	// 初始化视频帧转换器
 	d->videoConvertCtx = sws_getContext(d->codecContext->width, d->codecContext->height, d->codecContext->pix_fmt,
 		d->codecContext->width, d->codecContext->height, d->format, SWS_BICUBIC, NULL, NULL, NULL);
 
@@ -81,7 +84,7 @@ void McVideoDecoder::addPacket(AVPacket *packet) noexcept {
 	if (!packet || !d->videoStream) {
 		return;
 	}
-	if (packet->stream_index != d->videoStream->index) {
+	if (packet->stream_index != d->videoStream->index && strcmp((char*)packet->data, d->flushStr) != 0) {
 		return;
 	}
 
@@ -89,6 +92,19 @@ void McVideoDecoder::addPacket(AVPacket *packet) noexcept {
 	av_packet_ref(&tmpPck, packet);
 	QMutexLocker locker(&d->mtx);
 	d->videoPackets.enqueue(tmpPck);
+}
+
+int McVideoDecoder::getPacketNum() noexcept {
+	QMutexLocker locker(&d->mtx);
+	return d->videoPackets.size();
+}
+
+void McVideoDecoder::clearPacket() noexcept {
+	QMutexLocker locker(&d->mtx);
+	for (AVPacket &packet : d->videoPackets) {
+		av_packet_unref(&packet);
+	}
+	d->videoPackets.clear();
 }
 
 void McVideoDecoder::setVideoFormat(McVideoFormat::PixelFormat format) noexcept {
@@ -116,7 +132,8 @@ void McVideoDecoder::setVideoFormat(McVideoFormat::PixelFormat format) noexcept 
 
 void McVideoDecoder::getVideoData(const QSharedPointer<McVideoFrame> &frame, const std::function<void()> &callback) noexcept {
 	if (!d->videoStream) {
-		qCritical() << "video stream not found, please make sure media started decode";
+		//qCritical() << "video stream not found, please make sure media started decode";
+		QThread::msleep(10);
 		return;
 	}
 	QMutexLocker locker(&d->mtx);
@@ -149,7 +166,7 @@ void McVideoDecoder::getVideoData(const QSharedPointer<McVideoFrame> &frame, con
 
 		videoClock *= av_q2d(d->videoStream->time_base);	// 开始播放的时间，单位：s
 
-		videoClock = getEndClock(d->frame, videoClock);
+		//videoClock = getEndClock(d->frame, videoClock);
 
 		int dstHeight = sws_scale(d->videoConvertCtx, (const unsigned char* const*)d->frame->data, d->frame->linesize, 0, d->codecContext->height, d->frameDst->data, d->frameDst->linesize);
 		
@@ -178,14 +195,6 @@ void McVideoDecoder::release() noexcept {
 	}
 	d->videoStream = nullptr;
 	clearPacket();
-}
-
-void McVideoDecoder::clearPacket() noexcept {
-	QMutexLocker locker(&d->mtx);
-	for (AVPacket &packet : d->videoPackets) {
-		av_packet_unref(&packet);
-	}
-	d->videoPackets.clear();
 }
 
 double McVideoDecoder::getEndClock(AVFrame *frame, double startClock) noexcept {

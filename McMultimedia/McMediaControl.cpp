@@ -5,7 +5,7 @@
 #include "McGlobal.h"
 
 struct McMediaControlData {
-	QList<IMcMediaControl *> controls;
+	QList<IMcControl *> controls;
 };
 
 McMediaControl::McMediaControl(QObject *parent)
@@ -15,30 +15,42 @@ McMediaControl::McMediaControl(QObject *parent)
 }
 
 McMediaControl::~McMediaControl(){
+	quit();
 }
 
-void McMediaControl::addControl(IMcMediaControl *control) noexcept {
+void McMediaControl::addControl(IMcControl *control) noexcept {
 	if (control == this)
 		return;
 	d->controls.append(control);
 }
 
-void McMediaControl::start() noexcept {
-	MC_LOOP_CALL_P(d->controls, start);
+bool McMediaControl::start() noexcept {
+	stop();
+	for (auto c : d->controls) {
+		if (!c->start()) {
+			stop();
+			return false;
+		}
+	}
+	return true;
 }
 
 void McMediaControl::pause() noexcept {
-	MC_LOOP_CALL_P(d->controls, pause);
+	MC_LOOP_CALL_P(d->controls, pause());
 }
 
 void McMediaControl::resume() noexcept {
-	MC_LOOP_CALL_P(d->controls, resume);
+	MC_LOOP_CALL_P(d->controls, resume());
 }
 
 void McMediaControl::stop() noexcept {
-	MC_LOOP_CALL_P(d->controls, stop);
+	MC_LOOP_CALL_P(d->controls, stop());
 }
 
 void McMediaControl::quit() noexcept {
-	MC_LOOP_CALL_P(d->controls, quit);
+	MC_LOOP_CALL_P(d->controls, quit());
+}
+
+void McMediaControl::seek(qint64 pos) noexcept {
+	MC_LOOP_CALL_P(d->controls, seek(pos));
 }

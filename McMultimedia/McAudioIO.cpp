@@ -9,6 +9,8 @@
 struct McAudioIOData {
 	IMcAudioData *audio{ nullptr };				// 用于获取音频数据
 	QSharedPointer<McAudioFrame> audioFrame;	// 用于保存解码出的音频数据，音频帧由本对象提供，且只new一次，避免重复new造成的时间损耗和内存碎片的产生
+	qint64 dataIndex{ 0 };						// 如果存在未播放的音频数据，则表示该数据的起始下标
+	qint64 seekPos{ -1 };						// 将要跳转到的位置，默认为-1，表示不跳转，单位：us
 };
 
 McAudioIO::McAudioIO(IMcAudioData *audio, QObject *parent)
@@ -23,19 +25,36 @@ McAudioIO::McAudioIO(IMcAudioData *audio, QObject *parent)
 McAudioIO::~McAudioIO(){
 }
 
+bool McAudioIO::seek(qint64 pos) {
+	d->seekPos = pos * 1000;		// ms转us
+	return true;
+}
+
 qint64 McAudioIO::readData(char *data, qint64 maxSize) {
-	if (maxSize <= 0 || (d->audioFrame->getData() && d->audioFrame->getSize() > maxSize))	// maxSize小于等于0或者可写入空间不足以写入当前帧，直接返回
+	if (maxSize <= 0)	// maxSize小于等于0，直接返回
 		return 0;
 	qint64 size = 0;
-	if (d->audioFrame->getData()) {	// 如果存在未播放的音频数据
-		size += mixAudio(data, d->audioFrame);
+	if (d->audioFrame->getData() && d->seekPos == -1 && d->dataIndex < d->audioFrame->getSize()) {	// 如果存在未播放的音频数据并且没有跳转
+		size = mixAudio(data, 0, d->audioFrame, d->dataIndex, maxSize);
+		d->dataIndex += size;
 	}
 	while (size < maxSize) {	// 如果音频缓冲未写满
-		d->audio->getAudioData(d->audioFrame, [&]() {
-			if (d->audioFrame->getSize() > maxSize - size)	// 如果剩余空间不足以写入当前帧，则保存帧直接返回
+		d->audio->getAudioData(d->audioFrame, [&, this]() {
+			/*	如果发生了跳转，则不播放在跳转位置之前的音频
+				即，当发生跳转时，跳转到的真实位置可能在希望位置之前，则需要去除掉这部分音频
+			*/
+			if (d->audioFrame->getStartClock() * 1000 < d->seekPos) {
+				d->audioFrame->setData(nullptr);
+				size = 0;
 				return;
-			
-			size += mixAudio(data + size, d->audioFrame);
+			}
+			d->seekPos = -1;
+
+			d->dataIndex = mixAudio(data, size, d->audioFrame, 0, maxSize);
+			size += d->dataIndex;
+			if (d->dataIndex == d->audioFrame->getSize()) {	// 音频全部写入
+				d->audioFrame->setData(nullptr);	// 音频数据成功写入，置空
+			}
 		});
 		if (d->audioFrame->getData())	// 如果当前帧存在，则表示剩余空间不足以写入当前帧，直接退出返回
 			break;
@@ -47,10 +66,10 @@ qint64 McAudioIO::writeData(const char *data, qint64 maxSize) {
 	return 0;
 }
 
-qint64 McAudioIO::mixAudio(char *buffer, QSharedPointer<McAudioFrame> &frame) noexcept {
-	emit signal_clockChanged(frame->getStartClock(), frame->getEndClock());
-	qint64 frameSize = frame->getSize();
-	memcpy(buffer, frame->getData(), frameSize);
-	frame->setData(nullptr);	// 音频数据成功写入，置空
-	return frameSize;
+qint64 McAudioIO::mixAudio(char *buffer, qint64 bufferIndex, const QSharedPointer<McAudioFrame> &frame, qint64 dataIndex, qint64 maxSize) noexcept {
+	qint64 frameSize = frame->getSize() - dataIndex;	// 获取当前还剩余的音频大小
+	frameSize = qMin(frameSize, maxSize - bufferIndex);	// 获取可写入的大小
+	emit signal_clockChanged(frame->getStartClock(), dataIndex, frame->getEndClock(), frame->getSize() - dataIndex - frameSize);
+	memcpy(buffer + bufferIndex, frame->getData() + dataIndex, frameSize);
+	return frameSize;	// 返回已写入音频大小
 }

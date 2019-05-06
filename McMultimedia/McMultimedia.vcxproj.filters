@@ -110,6 +110,15 @@
     <ClInclude Include="IMcMediaControl.h">
       <Filter>Header Files\MediaPlayer</Filter>
     </ClInclude>
+    <ClInclude Include="IMcControl.h">
+      <Filter>Header Files\MediaPlayer</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcMediaDecoder.h">
+      <Filter>Header Files\Decoder</Filter>
+    </ClInclude>
+    <ClInclude Include="IMcVideoOutput.h">
+      <Filter>Header Files\MediaOutput</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="McMediaPlayer.cpp">
