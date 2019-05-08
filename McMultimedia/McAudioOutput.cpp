@@ -10,7 +10,7 @@
 struct McAudioOutputData {
 	IMcAudio *audio{ nullptr };			// 用于获取音频数据
 
-	QIODevice *io{ nullptr };			// IO
+	McAudioIO *io{ nullptr };			// IO
 	QAudioOutput *output{ nullptr };	// 音频输出设备
 
 	qint64 audioEndClock{ 0 };			// 当前已写入音频设备的数据的结束时间
@@ -67,10 +67,14 @@ bool McAudioOutput::start() noexcept {
 }
 
 void McAudioOutput::pause() noexcept {
+	if (d->isStop)
+		return;
 	MC_SAFE_CALL(d->output, suspend());
 }
 
 void McAudioOutput::resume() noexcept {
+	if (d->isStop)
+		return;
 	MC_SAFE_CALL(d->output, resume());
 }
 
@@ -80,13 +84,14 @@ void McAudioOutput::stop() noexcept {
 }
 
 void McAudioOutput::quit() noexcept {
+	stop();
 	MC_SAFE_CALL(d->output, stop());	// 释放音频资源
 	release();		// 释放本地资源，重新开始
 }
 
 void McAudioOutput::seek(qint64 pos) noexcept {
 	d->audioEndClock = pos;
-	MC_SAFE_CALL(d->io, seek(pos));
+	MC_SAFE_CALL(d->io, seekTo(pos));
 }
 
 void McAudioOutput::release() noexcept {

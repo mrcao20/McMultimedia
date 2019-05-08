@@ -37,6 +37,7 @@ McVideoOutput::~McVideoOutput(){
 
 void McVideoOutput::setVideo(IMcVideo *video) noexcept {
 	d->video = video;
+	d->video->setVideoFrame(d->videoFrame);
 	if (d->renderer)
 		d->video->setVideoFormat(d->renderer->getVideoFormat());
 }
@@ -102,7 +103,7 @@ void McVideoOutput::startDetach() noexcept {
 			QThread::msleep(10);
 			continue;
 		}
-		d->video->getVideoData(d->videoFrame, [this, &lastClock]() {
+		d->video->getVideoData([this, &lastClock]() {
 			qint64 uClock = d->videoFrame->getClock() * 1000;	// 单位us
 			/*	如果发生了跳转或视频帧发生了混乱，则不播放在跳转位置之前的视频
 				即，当发生跳转时，跳转到的真实位置可能在希望位置之前，则需要去除掉这部分音频
@@ -117,6 +118,10 @@ void McVideoOutput::startDetach() noexcept {
 				lastClock = uClock;
 			}
 		});
+	}
+	if (!d->rendererObj.isNull()) {
+		d->videoFrame->setData(nullptr);
+		d->renderer->rendering();
 	}
 }
 

@@ -28,8 +28,10 @@ public:
 	int getPacketNum() noexcept override;
 	// 清除所有资源包
 	void clearPacket() noexcept override;
+	// 设置音频帧，解码出的音频数据都将放入该帧中。
+	void setAudioFrame(const QSharedPointer<McAudioFrame> &frame) noexcept override;
 	// 解码音频包
-	void getAudioData(const QSharedPointer<McAudioFrame> &frame, const std::function<void()> &callback) noexcept override;
+	void getAudioData(const std::function<void()> &callback) noexcept override;
 	// 获取音频格式
 	QAudioFormat getAudioFormat() noexcept override;
 
@@ -38,6 +40,8 @@ private:
 	bool init_Swr() noexcept;
 	// 释放资源
 	void release() noexcept;
+	// 清空音频帧
+	void clearAudioFrame() noexcept;
 
 private:
 	QScopedPointer<McAudioDecoderData> d;

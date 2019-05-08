@@ -125,6 +125,7 @@ void McMediaPlayer::resume() noexcept {
 
 void McMediaPlayer::setState(State state) noexcept {
 	d->state = state;
+	emit signal_stateChanged(d->state);
 }
 
 void McMediaPlayer::setPos(qint64 pos) noexcept {

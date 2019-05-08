@@ -15,7 +15,7 @@ public:
 	explicit McAudioIO(IMcAudioData *audio, QObject *parent = 0);
 	~McAudioIO();
 
-	bool seek(qint64 pos) override;
+	void seekTo(qint64 pos) noexcept;
 
 signals:
 	/*************************************************

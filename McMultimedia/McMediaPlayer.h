@@ -34,6 +34,7 @@ public:
 signals:
 	void signal_durationChanged(qint64 duration);
 	void signal_positionChanged(qint64 pos);
+	void signal_stateChanged(McMediaPlayer::State);
 
 public slots:
 	void play() noexcept;

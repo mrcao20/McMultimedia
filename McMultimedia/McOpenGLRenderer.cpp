@@ -3,6 +3,7 @@
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <qmutex.h>
 
 #include "McVideoFrame.h"
 #include "McGlobal.h"
@@ -124,10 +125,12 @@ void McOpenGLRenderer::initializeGL() {
 
 //Ë¢ÐÂÏÔÊ¾
 void McOpenGLRenderer::paintGL() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (!d->frame || !d->frame->getData()) {
+	if (!d->frame)
 		return;
-	}
+	QMutexLocker locker(&d->frame->getMutex());
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	if (!d->frame->getData())
+		return;
 	uchar *yuv = d->frame->getData();
 	uint width = d->frame->getWidth();
 	uint height = d->frame->getHeight();

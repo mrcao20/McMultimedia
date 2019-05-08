@@ -35,8 +35,10 @@ public:
 
 	// 设置解码出的视频帧格式
 	void setVideoFormat(McVideoFormat::PixelFormat format) noexcept override;
+	// 设置视频帧，解码出的视频数据都将放入该帧中。
+	void setVideoFrame(const QSharedPointer<McVideoFrame> &frame) noexcept override;
 	// 解码视频包
-	void getVideoData(const QSharedPointer<McVideoFrame> &frame, const std::function<void()> &callback) noexcept override;
+	void getVideoData(const std::function<void()> &callback) noexcept override;
 
 private:
 	// 释放资源

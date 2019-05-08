@@ -22,6 +22,7 @@ struct McVideoDecoderData {
 	quint8 *outBuffer{ nullptr };				// 指向目标视频帧的数据
 	SwsContext *videoConvertCtx{ nullptr };		// 用于转换视频帧
 	AVPixelFormat format{ AV_PIX_FMT_NONE };		// 视频解码的目标格式，从外部传入
+	QSharedPointer<McVideoFrame> videoFrame;	// 视频帧，解码出的视频数据都将放入该帧中。
 
 	QMutex mtx;									// 视频包的同步锁
 	QQueue<AVPacket> videoPackets;				// 存放被读出的待解码的视频包
@@ -130,7 +131,11 @@ void McVideoDecoder::setVideoFormat(McVideoFormat::PixelFormat format) noexcept 
 	}
 }
 
-void McVideoDecoder::getVideoData(const QSharedPointer<McVideoFrame> &frame, const std::function<void()> &callback) noexcept {
+void McVideoDecoder::setVideoFrame(const QSharedPointer<McVideoFrame> &frame) noexcept {
+	d->videoFrame = frame;
+}
+
+void McVideoDecoder::getVideoData(const std::function<void()> &callback) noexcept {
 	if (!d->videoStream) {
 		//qCritical() << "video stream not found, please make sure media started decode";
 		QThread::msleep(10);
@@ -170,15 +175,22 @@ void McVideoDecoder::getVideoData(const QSharedPointer<McVideoFrame> &frame, con
 
 		int dstHeight = sws_scale(d->videoConvertCtx, (const unsigned char* const*)d->frame->data, d->frame->linesize, 0, d->codecContext->height, d->frameDst->data, d->frameDst->linesize);
 		
-		frame->setData(d->outBuffer);
-		frame->setLinesize(d->frameDst->linesize[0]);
-		frame->setHeight(dstHeight);
-		frame->setClock(videoClock * 1000);		// s转ms
+		QMutexLocker frameLocker(&d->videoFrame->getMutex());
+		d->videoFrame->setData(d->outBuffer);
+		d->videoFrame->setLinesize(d->frameDst->linesize[0]);
+		d->videoFrame->setHeight(dstHeight);
+		d->videoFrame->setClock(videoClock * 1000);		// s转ms
+		frameLocker.unlock();
 		callback();
 	}
 }
 
 void McVideoDecoder::release() noexcept {
+	clearPacket();
+	if (d->videoFrame) {
+		QMutexLocker frameLocker(&d->videoFrame->getMutex());
+		d->videoFrame->setData(nullptr);
+	}
 	if (d->outBuffer)
 		av_freep(&d->outBuffer);	// 自动置空
 	if (d->frame)
@@ -194,7 +206,6 @@ void McVideoDecoder::release() noexcept {
 		d->videoConvertCtx = nullptr;
 	}
 	d->videoStream = nullptr;
-	clearPacket();
 }
 
 double McVideoDecoder::getEndClock(AVFrame *frame, double startClock) noexcept {
