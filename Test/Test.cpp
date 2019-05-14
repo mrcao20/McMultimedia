@@ -72,7 +72,7 @@ Test::Test(QWidget *parent)
 		m_mediaPlayer->setMediaUrl(path);
 		m_mediaPlayer->play();
 	});
-
+	
 	ui.progressBar->installEventFilter(this);
 }
 

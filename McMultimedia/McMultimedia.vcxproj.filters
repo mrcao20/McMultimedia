@@ -69,6 +69,24 @@
     <Filter Include="Header Files\MediaOutput\Renderer\impl">
       <UniqueIdentifier>{1baf7e32-9bcf-4871-8e99-f91ab6f6bfef}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Qml">
+      <UniqueIdentifier>{37adaf50-c70e-4994-a8c9-0533b344b5ee}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Qml">
+      <UniqueIdentifier>{af4de713-2728-4bdf-ac60-2f103897d8d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Qml\MediaPlayer">
+      <UniqueIdentifier>{8939decb-f979-4890-8691-bef2a0226f03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Qml\MediaPlayer">
+      <UniqueIdentifier>{32bf8a34-b944-42b4-ad74-66f69ec37cb7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Qml\MediaOutput">
+      <UniqueIdentifier>{b270c911-3a06-4cee-95eb-de8e56b957b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Qml\MediaOutput">
+      <UniqueIdentifier>{6a2c8d27-91aa-4ec6-a3ec-30283ef96391}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="mcmultimedia_global.h">
@@ -148,6 +166,12 @@
     <ClCompile Include="McMediaControl.cpp">
       <Filter>Source Files\MediaPlayer</Filter>
     </ClCompile>
+    <ClCompile Include="QmlMediaPlayerPlugin.cpp">
+      <Filter>Source Files\Qml</Filter>
+    </ClCompile>
+    <ClCompile Include="QmlMediaPlayer.cpp">
+      <Filter>Source Files\Qml\MediaPlayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="McMediaPlayer.h">
@@ -176,6 +200,12 @@
     </QtMoc>
     <QtMoc Include="McMediaControl.h">
       <Filter>Header Files\MediaPlayer</Filter>
+    </QtMoc>
+    <QtMoc Include="QmlMediaPlayer.h">
+      <Filter>Header Files\Qml\MediaPlayer</Filter>
+    </QtMoc>
+    <QtMoc Include="QmlMediaPlayerPlugin.h">
+      <Filter>Header Files\Qml</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>
