@@ -4,13 +4,15 @@
 #include <QQuickItem>
 
 #include "McMediaPlayer.h"
+#include "mcmultimedia_global.h"
 
-class QmlMediaPlayer : public QQuickItem {
+class MCMULTIMEDIA_EXPORT QmlMediaPlayer : public QQuickItem {
 	Q_OBJECT
 	Q_PROPERTY(qreal position READ position NOTIFY signal_positionChanged)
 	Q_PROPERTY(qreal duration READ duration NOTIFY signal_durationChanged)
 	Q_PROPERTY(QString source MEMBER m_mediaUrl NOTIFY signal_sourceChanged)
 	Q_PROPERTY(State state READ state NOTIFY signal_stateChanged)
+	Q_PROPERTY(QQuickItem *videoRenderer MEMBER m_videoRenderer NOTIFY signal_videoRendererChanged)
 
 	Q_ENUMS(State)
 public:
@@ -36,6 +38,7 @@ signals:
 	void signal_durationChanged();
 	void signal_sourceChanged();
 	void signal_stateChanged();
+	void signal_videoRendererChanged();
 
 private:
 	McMediaPlayer m_mediaPlayer;				// 播放器
@@ -45,6 +48,8 @@ private:
 	QString m_mediaUrl;							// 当前媒体
 
 	State m_state{ State::StoppedState };		// 当前状态
+
+	QQuickItem *m_videoRenderer{ nullptr };		// 视频渲染器
 };
 
 #endif // !_QML_MEDIA_PLAYER_H_

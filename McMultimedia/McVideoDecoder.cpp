@@ -48,10 +48,6 @@ bool McVideoDecoder::init(AVStream *stream) noexcept {
 	if (!stream) {
 		return false;
 	}
-	if (d->format == AV_PIX_FMT_NONE) {
-		qCritical() << "video format not set.";
-		return false;
-	}
 	release();	// 释放上一个解码器的资源
 	AVCodec *pCodec = avcodec_find_decoder(stream->codecpar->codec_id);
 	if (pCodec == NULL) {
@@ -67,16 +63,6 @@ bool McVideoDecoder::init(AVStream *stream) noexcept {
 	d->videoStream = stream;
 
 	d->frame = av_frame_alloc();
-	d->frameDst = av_frame_alloc();
-
-	// 申请一块内存，指向输出视频帧
-	d->outBuffer = (unsigned char *)av_malloc(av_image_get_buffer_size(d->format, d->codecContext->width, d->codecContext->height, 1));
-	av_image_fill_arrays(d->frameDst->data, d->frameDst->linesize, d->outBuffer,
-		d->format, d->codecContext->width, d->codecContext->height, 1);
-
-	// 初始化视频帧转换器
-	d->videoConvertCtx = sws_getContext(d->codecContext->width, d->codecContext->height, d->codecContext->pix_fmt,
-		d->codecContext->width, d->codecContext->height, d->format, SWS_BICUBIC, NULL, NULL, NULL);
 
 	return true;
 }
@@ -173,6 +159,8 @@ void McVideoDecoder::getVideoData(const std::function<void()> &callback) noexcep
 
 		//videoClock = getEndClock(d->frame, videoClock);
 
+		if (!initOutContext())
+			continue;
 		int dstHeight = sws_scale(d->videoConvertCtx, (const unsigned char* const*)d->frame->data, d->frame->linesize, 0, d->codecContext->height, d->frameDst->data, d->frameDst->linesize);
 		
 		QMutexLocker frameLocker(&d->videoFrame->getMutex());
@@ -215,4 +203,23 @@ double McVideoDecoder::getEndClock(AVFrame *frame, double startClock) noexcept {
 	startClock += delay;
 
 	return startClock;
+}
+
+bool McVideoDecoder::initOutContext() noexcept {
+	if (d->format == AV_PIX_FMT_NONE) {
+		qDebug() << "video format not set.";
+		return false;
+	}
+	if (d->videoConvertCtx)
+		return true;
+	d->frameDst = av_frame_alloc();
+	// 申请一块内存，指向输出视频帧
+	d->outBuffer = (unsigned char *)av_malloc(av_image_get_buffer_size(d->format, d->codecContext->width, d->codecContext->height, 1));
+	av_image_fill_arrays(d->frameDst->data, d->frameDst->linesize, d->outBuffer,
+		d->format, d->codecContext->width, d->codecContext->height, 1);
+
+	// 初始化视频帧转换器
+	d->videoConvertCtx = sws_getContext(d->codecContext->width, d->codecContext->height, d->codecContext->pix_fmt,
+		d->codecContext->width, d->codecContext->height, d->format, SWS_BICUBIC, NULL, NULL, NULL);
+	return true;
 }

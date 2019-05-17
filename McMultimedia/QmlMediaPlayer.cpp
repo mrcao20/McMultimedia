@@ -1,5 +1,7 @@
 #include "QmlMediaPlayer.h"
 
+#include "IMcVideoRenderer.h"
+
 QmlMediaPlayer::QmlMediaPlayer(QQuickItem *parent)
 	: QQuickItem(parent)
 {
@@ -18,6 +20,14 @@ QmlMediaPlayer::QmlMediaPlayer(QQuickItem *parent)
 	connect(this, &QmlMediaPlayer::signal_sourceChanged, [this]() {
 		m_mediaPlayer.setMediaUrl(m_mediaUrl);
 		play();
+	});
+	connect(this, &QmlMediaPlayer::signal_videoRendererChanged, [this]() {
+		auto videoRenderer = dynamic_cast<IMcVideoRenderer *>(m_videoRenderer);
+		if (!videoRenderer) {
+			qDebug() << "renderer must be implement of IMcVideoRenderer";
+			return;
+		}
+		m_mediaPlayer.setVideoRenderer(videoRenderer);
 	});
 }
 

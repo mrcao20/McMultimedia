@@ -1,48 +1,29 @@
-#include "McOpenGLRenderer.h"
+#include "QmlOpenGLRenderer.h"
 
 #include <QOpenGLBuffer>
 #include <QOpenGLShaderProgram>
 #include <QOpenGLTexture>
+#include <qmutex.h>
 
 #include "McVideoFrame.h"
 
 #define VERTEXIN 0
 #define TEXTUREIN 1
 
-struct McOpenGLRendererData {
+struct QmlOpenGLRendererData {
 	//shader程序
-	QOpenGLShaderProgram *program{ nullptr };
+	QScopedPointer<QOpenGLShaderProgram> program{ nullptr };
+	QScopedPointer<QOpenGLShader> vshader;
+	QScopedPointer<QOpenGLShader> fshader;
 	QOpenGLBuffer vbo;
 	GLuint textureUniformY, textureUniformU, textureUniformV; //opengl中y、u、v分量位置
 	QOpenGLTexture *textureY = nullptr, *textureU = nullptr, *textureV = nullptr;
 	GLuint idY, idU, idV; //自己创建的纹理对象ID，创建错误返回0
-
-	QSharedPointer<McVideoFrame> frame;		// 视频帧，由外部传入
 };
 
-McOpenGLRenderer::McOpenGLRenderer(QWidget *parent)
-	: QOpenGLWidget(parent)
-	, d(new McOpenGLRendererData())
+QmlOpenGLRenderer::QmlOpenGLRenderer()
+	: d(new QmlOpenGLRendererData)
 {
-}
-
-McOpenGLRenderer::~McOpenGLRenderer(){
-}
-
-McVideoFormat::PixelFormat McOpenGLRenderer::getVideoFormat() noexcept {
-	return McVideoFormat::PixelFormat::Format_YUV420P;
-}
-
-void McOpenGLRenderer::setVideoFrame(const QSharedPointer<McVideoFrame> &frame) noexcept {
-	d->frame = frame;
-}
-
-void McOpenGLRenderer::rendering() noexcept {
-	update();
-}
-
-//初始化gl
-void McOpenGLRenderer::initializeGL() {
 	initializeOpenGLFunctions();
 	//glEnable(GL_DEPTH_TEST);
 
@@ -63,7 +44,7 @@ void McOpenGLRenderer::initializeGL() {
 	d->vbo.bind();
 	d->vbo.allocate(vertices, sizeof(vertices));
 
-	QOpenGLShader *vshader = new QOpenGLShader(QOpenGLShader::Vertex, this);
+	d->vshader.reset(new QOpenGLShader(QOpenGLShader::Vertex));
 	const char *vsrc =
 		"attribute vec4 vertexIn; \
     attribute vec2 textureIn; \
@@ -73,9 +54,9 @@ void McOpenGLRenderer::initializeGL() {
         gl_Position = vertexIn; \
         textureOut = textureIn; \
     }";
-	vshader->compileSourceCode(vsrc);
+	d->vshader->compileSourceCode(vsrc);
 
-	QOpenGLShader *fshader = new QOpenGLShader(QOpenGLShader::Fragment, this);
+	d->fshader.reset(new QOpenGLShader(QOpenGLShader::Fragment));
 	const char *fsrc = "varying vec2 textureOut; \
     uniform sampler2D tex_y; \
     uniform sampler2D tex_u; \
@@ -92,11 +73,11 @@ void McOpenGLRenderer::initializeGL() {
                     1.13983, -0.58060,  0) * yuv; \
         gl_FragColor = vec4(rgb, 1); \
     }";
-	fshader->compileSourceCode(fsrc);
+	d->fshader->compileSourceCode(fsrc);
 
-	d->program = new QOpenGLShaderProgram(this);
-	d->program->addShader(vshader);
-	d->program->addShader(fshader);
+	d->program.reset(new QOpenGLShaderProgram());
+	d->program->addShader(d->vshader.data());
+	d->program->addShader(d->fshader.data());
 	d->program->bindAttributeLocation("vertexIn", VERTEXIN);
 	d->program->bindAttributeLocation("textureIn", TEXTUREIN);
 	d->program->link();
@@ -121,18 +102,17 @@ void McOpenGLRenderer::initializeGL() {
 	glClearColor(0.0, 0.0, 0.0, 0.0);
 }
 
-//刷新显示
-void McOpenGLRenderer::paintGL() {
-	if (!d->frame)
-		return;
-	QMutexLocker locker(&d->frame->getMutex());
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-	if (!d->frame->getData())
-		return;
-	uchar *yuv = d->frame->getData();
-	uint width = d->frame->getWidth();
-	uint height = d->frame->getHeight();
 
+QmlOpenGLRenderer::~QmlOpenGLRenderer()
+{
+}
+
+void QmlOpenGLRenderer::clearup() noexcept {
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+}
+
+void QmlOpenGLRenderer::rendering(uchar *yuv, uint width, uint height) noexcept {
+	clearup();
 	//    QMatrix4x4 m;
 	//    m.perspective(60.0f, 4.0f/3.0f, 0.1f, 100.0f );//透视矩阵随距离的变化，图形跟着变化。屏幕平面中心就是视点（摄像头）,需要将图形移向屏幕里面一定距离。
 	//    m.ortho(-2,+2,-2,+2,-10,10);//近裁剪平面是一个矩形,矩形左下角点三维空间坐标是（left,bottom,-near）,右上角点是（right,top,-near）所以此处为负，表示z轴最大为10；
@@ -176,6 +156,6 @@ void McOpenGLRenderer::paintGL() {
 	glFlush();
 }
 
-void McOpenGLRenderer::resizeGL(int width, int height) {
+void QmlOpenGLRenderer::resizeRenderer(int width, int height) noexcept {
 	glViewport(0, 0, width, height);
 }

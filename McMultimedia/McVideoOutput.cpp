@@ -52,13 +52,15 @@ void McVideoOutput::setRenderer(IMcVideoRenderer *renderer) noexcept {
 	MC_SAFE_DELETE(d->renderer);	// 如果已经存在一个渲染器，则删除它
 	d->rendererObj = dynamic_cast<QObject *>(renderer);
 	d->renderer = renderer;
+	if (!d->renderer)
+		return;
 	d->renderer->setVideoFrame(d->videoFrame);
 	if(d->video)
 		d->video->setVideoFormat(d->renderer->getVideoFormat());
 }
 
 bool McVideoOutput::start() noexcept {
-	if (!d->video || !d->renderer)
+	if (!d->video)
 		return true;
 
 	quit();

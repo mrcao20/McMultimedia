@@ -137,6 +137,15 @@
     <ClInclude Include="IMcVideoOutput.h">
       <Filter>Header Files\MediaOutput</Filter>
     </ClInclude>
+    <ClInclude Include="QmlOpenGLRenderer.h">
+      <Filter>Header Files\Qml\MediaOutput</Filter>
+    </ClInclude>
+    <ClInclude Include="QmlSGVideoNode.h">
+      <Filter>Header Files\Qml\MediaOutput</Filter>
+    </ClInclude>
+    <ClInclude Include="Nv12Render.h">
+      <Filter>Header Files\Qml\MediaOutput</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="McMediaPlayer.cpp">
@@ -172,6 +181,27 @@
     <ClCompile Include="QmlMediaPlayer.cpp">
       <Filter>Source Files\Qml\MediaPlayer</Filter>
     </ClCompile>
+    <ClCompile Include="QmlOpenGLRenderer.cpp">
+      <Filter>Source Files\Qml\MediaOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="QmlVideoRenderer.cpp">
+      <Filter>Source Files\Qml\MediaOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="QmlSGVideoNode.cpp">
+      <Filter>Source Files\Qml\MediaOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="Nv12Render.cpp">
+      <Filter>Source Files\Qml\MediaOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="RenderThread.cpp">
+      <Filter>Source Files\Qml\MediaOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="TextureNode.cpp">
+      <Filter>Source Files\Qml\MediaOutput</Filter>
+    </ClCompile>
+    <ClCompile Include="VideoThreadRender.cpp">
+      <Filter>Source Files\Qml\MediaOutput</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <QtMoc Include="McMediaPlayer.h">
@@ -206,6 +236,18 @@
     </QtMoc>
     <QtMoc Include="QmlMediaPlayerPlugin.h">
       <Filter>Header Files\Qml</Filter>
+    </QtMoc>
+    <QtMoc Include="QmlVideoRenderer.h">
+      <Filter>Header Files\Qml\MediaOutput</Filter>
+    </QtMoc>
+    <QtMoc Include="VideoThreadRender.h">
+      <Filter>Header Files\Qml\MediaOutput</Filter>
+    </QtMoc>
+    <QtMoc Include="RenderThread.h">
+      <Filter>Header Files\Qml\MediaOutput</Filter>
+    </QtMoc>
+    <QtMoc Include="TextureNode.h">
+      <Filter>Header Files\Qml\MediaOutput</Filter>
     </QtMoc>
   </ItemGroup>
 </Project>

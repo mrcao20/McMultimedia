@@ -44,6 +44,7 @@ private:
 	// สอทลืสิด
 	void release() noexcept;
 	double getEndClock(AVFrame *frame, double startClock) noexcept;
+	bool initOutContext() noexcept;
 
 private:
 	QScopedPointer<McVideoDecoderData> d;
