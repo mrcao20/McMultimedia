@@ -1,6 +1,8 @@
 #include "McMediaPlayer.h"
 
 #include <qdebug.h>
+#include <qevent.h>
+#include <qcoreapplication.h>
 
 #include "McMediaControl.h"
 #include "McMediaDecoder.h"
@@ -107,6 +109,8 @@ void McMediaPlayer::stop() noexcept {
 		return;
 	setState(State::StoppedState);
 	d->mediaControl->stop();
+	// 由于quit函数可能会造成暂停从而造成界面卡顿，所以这里采用异步调用
+	qApp->postEvent(this, new QEvent(QEvent::User));
 }
 
 void McMediaPlayer::pause() noexcept {
@@ -121,6 +125,13 @@ void McMediaPlayer::resume() noexcept {
 		return;
 	setState(State::PlayingState);
 	d->mediaControl->resume();
+}
+
+bool McMediaPlayer::event(QEvent *e) {
+	if (e->type() != QEvent::User)
+		return QObject::event(e);
+	d->mediaControl->quit();
+	return true;
 }
 
 void McMediaPlayer::setState(State state) noexcept {

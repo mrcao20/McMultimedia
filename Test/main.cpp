@@ -1,5 +1,5 @@
-//#include "Test.h"
-//#include <QtWidgets/QApplication>
+#include "Test.h"
+#include <QtWidgets/QApplication>
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 
@@ -9,10 +9,10 @@
 
 int main(int argc, char *argv[])
 {
-	/*QApplication a(argc, argv);
+	QApplication a(argc, argv);
 	Test w;
 	w.show();
-	return a.exec();*/
+	return a.exec();
 
 	QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
 

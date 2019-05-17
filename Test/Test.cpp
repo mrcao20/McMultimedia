@@ -69,6 +69,7 @@ Test::Test(QWidget *parent)
 		//path = R"(http://localhost:8099/static/刺激强度与反应的关系.mp4)";
 		//path = R"(D:\temp\222.mp4)";
 		//path = R"(D:\Downloads\走马+-+曲肖冰.mp3)";
+		path = R"(E:\迅雷下载\video\名侦探柯南.零的执行人.Detective.Conan.Zero.the.Enforcer.2018.BD1080P.高清日语中字.mp4)";
 		m_mediaPlayer->setMediaUrl(path);
 		m_mediaPlayer->play();
 	});

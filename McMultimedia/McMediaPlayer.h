@@ -42,6 +42,9 @@ public slots:
 	void pause() noexcept;
 	void resume() noexcept;
 
+protected:
+	bool event(QEvent *e) override;
+
 private:
 	void setState(State state) noexcept;
 	void setPos(qint64 pos) noexcept;

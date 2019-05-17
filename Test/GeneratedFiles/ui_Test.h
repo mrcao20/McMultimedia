@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'Test.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.6
+** Created by: Qt User Interface Compiler version 5.12.3
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,11 +10,8 @@
 #define UI_TEST_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QHBoxLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QMainWindow>
 #include <QtWidgets/QMenuBar>
 #include <QtWidgets/QPushButton>
@@ -50,17 +47,17 @@ public:
     void setupUi(QMainWindow *TestClass)
     {
         if (TestClass->objectName().isEmpty())
-            TestClass->setObjectName(QStringLiteral("TestClass"));
+            TestClass->setObjectName(QString::fromUtf8("TestClass"));
         TestClass->resize(813, 564);
         centralWidget = new QWidget(TestClass);
-        centralWidget->setObjectName(QStringLiteral("centralWidget"));
+        centralWidget->setObjectName(QString::fromUtf8("centralWidget"));
         verticalLayout = new QVBoxLayout(centralWidget);
         verticalLayout->setSpacing(0);
         verticalLayout->setContentsMargins(11, 11, 11, 11);
-        verticalLayout->setObjectName(QStringLiteral("verticalLayout"));
+        verticalLayout->setObjectName(QString::fromUtf8("verticalLayout"));
         verticalLayout->setContentsMargins(0, 0, 0, 0);
         videoOutput = new McOpenGLRenderer(centralWidget);
-        videoOutput->setObjectName(QStringLiteral("videoOutput"));
+        videoOutput->setObjectName(QString::fromUtf8("videoOutput"));
         QSizePolicy sizePolicy(QSizePolicy::Preferred, QSizePolicy::Expanding);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
@@ -70,48 +67,48 @@ public:
         verticalLayout->addWidget(videoOutput);
 
         progressBar = new QSlider(centralWidget);
-        progressBar->setObjectName(QStringLiteral("progressBar"));
+        progressBar->setObjectName(QString::fromUtf8("progressBar"));
         progressBar->setOrientation(Qt::Horizontal);
 
         verticalLayout->addWidget(progressBar);
 
         horizontalLayout = new QHBoxLayout();
         horizontalLayout->setSpacing(6);
-        horizontalLayout->setObjectName(QStringLiteral("horizontalLayout"));
+        horizontalLayout->setObjectName(QString::fromUtf8("horizontalLayout"));
         horizontalSpacer = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         horizontalLayout->addItem(horizontalSpacer);
 
         stopBtn = new QPushButton(centralWidget);
-        stopBtn->setObjectName(QStringLiteral("stopBtn"));
+        stopBtn->setObjectName(QString::fromUtf8("stopBtn"));
         stopBtn->setMinimumSize(QSize(40, 40));
         stopBtn->setMaximumSize(QSize(40, 40));
 
         horizontalLayout->addWidget(stopBtn);
 
         backwardBtn = new QPushButton(centralWidget);
-        backwardBtn->setObjectName(QStringLiteral("backwardBtn"));
+        backwardBtn->setObjectName(QString::fromUtf8("backwardBtn"));
         backwardBtn->setMinimumSize(QSize(40, 40));
         backwardBtn->setMaximumSize(QSize(40, 40));
 
         horizontalLayout->addWidget(backwardBtn);
 
         playBtn = new QPushButton(centralWidget);
-        playBtn->setObjectName(QStringLiteral("playBtn"));
+        playBtn->setObjectName(QString::fromUtf8("playBtn"));
         playBtn->setMinimumSize(QSize(40, 40));
         playBtn->setMaximumSize(QSize(40, 40));
 
         horizontalLayout->addWidget(playBtn);
 
         forwardBtn = new QPushButton(centralWidget);
-        forwardBtn->setObjectName(QStringLiteral("forwardBtn"));
+        forwardBtn->setObjectName(QString::fromUtf8("forwardBtn"));
         forwardBtn->setMinimumSize(QSize(40, 40));
         forwardBtn->setMaximumSize(QSize(40, 40));
 
         horizontalLayout->addWidget(forwardBtn);
 
         pushButton = new QPushButton(centralWidget);
-        pushButton->setObjectName(QStringLiteral("pushButton"));
+        pushButton->setObjectName(QString::fromUtf8("pushButton"));
 
         horizontalLayout->addWidget(pushButton);
 
@@ -124,14 +121,14 @@ public:
 
         TestClass->setCentralWidget(centralWidget);
         menuBar = new QMenuBar(TestClass);
-        menuBar->setObjectName(QStringLiteral("menuBar"));
+        menuBar->setObjectName(QString::fromUtf8("menuBar"));
         menuBar->setGeometry(QRect(0, 0, 813, 23));
         TestClass->setMenuBar(menuBar);
         mainToolBar = new QToolBar(TestClass);
-        mainToolBar->setObjectName(QStringLiteral("mainToolBar"));
+        mainToolBar->setObjectName(QString::fromUtf8("mainToolBar"));
         TestClass->addToolBar(Qt::TopToolBarArea, mainToolBar);
         statusBar = new QStatusBar(TestClass);
-        statusBar->setObjectName(QStringLiteral("statusBar"));
+        statusBar->setObjectName(QString::fromUtf8("statusBar"));
         TestClass->setStatusBar(statusBar);
 
         retranslateUi(TestClass);
@@ -141,12 +138,12 @@ public:
 
     void retranslateUi(QMainWindow *TestClass)
     {
-        TestClass->setWindowTitle(QApplication::translate("TestClass", "Test", Q_NULLPTR));
-        stopBtn->setText(QApplication::translate("TestClass", "stop", Q_NULLPTR));
-        backwardBtn->setText(QApplication::translate("TestClass", "back", Q_NULLPTR));
-        playBtn->setText(QApplication::translate("TestClass", "play", Q_NULLPTR));
-        forwardBtn->setText(QApplication::translate("TestClass", "Forward", Q_NULLPTR));
-        pushButton->setText(QApplication::translate("TestClass", "PushButton", Q_NULLPTR));
+        TestClass->setWindowTitle(QApplication::translate("TestClass", "Test", nullptr));
+        stopBtn->setText(QApplication::translate("TestClass", "stop", nullptr));
+        backwardBtn->setText(QApplication::translate("TestClass", "back", nullptr));
+        playBtn->setText(QApplication::translate("TestClass", "play", nullptr));
+        forwardBtn->setText(QApplication::translate("TestClass", "Forward", nullptr));
+        pushButton->setText(QApplication::translate("TestClass", "PushButton", nullptr));
     } // retranslateUi
 
 };
