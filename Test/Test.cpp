@@ -54,22 +54,8 @@ Test::Test(QWidget *parent)
 	});
 
 	connect(ui.pushButton, &QPushButton::clicked, [this]() {
-		QString path = qApp->applicationDirPath() + "/";
-#ifdef _DEBUG
-		path += "../Release/";
-#endif // _DEBUG
-
-		path += "a.mp4";
-		path = R"(D:\temp\Resource\操作视频\刺激频率与骨骼肌收缩的关系.flv)";
-		//path = R"(D:\SVN_Repository\TAS-100原始版本\TAS-100\bin\Debug\Resource原始数据\肌肉神经实验\刺激频率与反应的关系\3\05录像.flv)";
-		//path = R"(D:\temp\Resource\操作视频\蟾蜍在体心肌动作电位与心电图记录.wmv)";
-		//path = R"(D:\temp\hf6PkPOD8-jg34zxxvKPlf-j+seG8Izu-ocdWQZDCQ==\hf6PkPOD8-jg34zxxvKPlf-j+seG8Izu-ocdWQZDCQ==.m3u8)";
-		//path = "http://127.0.0.1:8099/static/temp/index.m3u8";
-		//path = qApp->applicationDirPath() +  R"(\temp\index.m3u8)";
-		//path = R"(http://localhost:8099/static/刺激强度与反应的关系.mp4)";
-		//path = R"(D:\temp\222.mp4)";
-		//path = R"(D:\Downloads\走马+-+曲肖冰.mp3)";
-		path = R"(E:\迅雷下载\video\名侦探柯南.零的执行人.Detective.Conan.Zero.the.Enforcer.2018.BD1080P.高清日语中字.mp4)";
+		QString path;
+		path = R"(F:\Music\All About That Bass.mp3)";
 		m_mediaPlayer->setMediaUrl(path);
 		m_mediaPlayer->play();
 	});

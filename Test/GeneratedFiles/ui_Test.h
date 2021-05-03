@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'Test.ui'
 **
-** Created by: Qt User Interface Compiler version 5.12.3
+** Created by: Qt User Interface Compiler version 5.15.0
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -138,12 +138,12 @@ public:
 
     void retranslateUi(QMainWindow *TestClass)
     {
-        TestClass->setWindowTitle(QApplication::translate("TestClass", "Test", nullptr));
-        stopBtn->setText(QApplication::translate("TestClass", "stop", nullptr));
-        backwardBtn->setText(QApplication::translate("TestClass", "back", nullptr));
-        playBtn->setText(QApplication::translate("TestClass", "play", nullptr));
-        forwardBtn->setText(QApplication::translate("TestClass", "Forward", nullptr));
-        pushButton->setText(QApplication::translate("TestClass", "PushButton", nullptr));
+        TestClass->setWindowTitle(QCoreApplication::translate("TestClass", "Test", nullptr));
+        stopBtn->setText(QCoreApplication::translate("TestClass", "stop", nullptr));
+        backwardBtn->setText(QCoreApplication::translate("TestClass", "back", nullptr));
+        playBtn->setText(QCoreApplication::translate("TestClass", "play", nullptr));
+        forwardBtn->setText(QCoreApplication::translate("TestClass", "Forward", nullptr));
+        pushButton->setText(QCoreApplication::translate("TestClass", "PushButton", nullptr));
     } // retranslateUi
 
 };
